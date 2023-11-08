@@ -9,16 +9,17 @@ void merge(std::vector<int>& vec, int l,int r)
     int j = mid + 1;
     int pos = 0;
     std::vector<int> result(r - l + 1);
-    while(i <= mid && j <= r)
+    while(i <= mid || j <= r)
     {
         if(vec[i] <= vec[j])
         {
             result[pos++] = vec[i++];
-        }else
+        }else 
         {
             result[pos++] = vec[j++];
         }
     }
+    
     while(i<=mid)
     {
         result[pos++] = vec[i++];
@@ -27,6 +28,7 @@ void merge(std::vector<int>& vec, int l,int r)
     {
         result[pos++] = vec[j++];
     }
+    
     for (int i = l; i <= r; ++i)
     {
         vec[i] = result[i - l];
