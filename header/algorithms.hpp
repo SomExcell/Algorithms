@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 void insertSort(std::vector<int> &vec)
 {
@@ -66,13 +67,13 @@ void merge(std::vector<int>& vec, int l,int r)
     
 }
 
-void mergeSort(std::vector<int>& vec,int l,int r)
+void mergeSort(std::vector<int>& vec,int start,int end)
 {
-    if(r<=l){return;}
-    int mid = l + (r - l) / 2;
-    mergeSort(vec,l,mid);
-    mergeSort(vec,mid+1,r);
-    merge(vec,l,r);
+    if(end<=start){return;}
+    int mid = start + (end - start) / 2;
+    mergeSort(vec,start,mid);
+    mergeSort(vec,mid+1,end);
+    merge(vec,start,end);
 }
 
 int partition(std::vector<int> &vec,int left,int right)
@@ -100,35 +101,20 @@ void quickSort(std::vector<int> &vec,int start,int end)
     quickSort(vec,rightStart,end);
 }
 
-void radixSort(std::vector<int> &vec)
-{
-    int size = vec.size(),place = 1,poz = 0,value;
-    std::vector<int> count(10);
-    std::vector<int> positon(10);
-    std::vector<int> result(size);
-    while(true)
-    {
-        for (int i = 0; i < size; ++i)
-        {
-            value = vec[i]/place%10;
-            ++count[value];
-        } 
-        for (int i = 0; i < 10; ++i)
-        {
-            positon[i] = poz;
-            poz+=count[i];
+void radixSort(std::vector<int>& arr) {
+    int maxDigit = *max_element(arr.begin(), arr.end());
+    for (int exp = 1; maxDigit / exp > 0; exp *= 10) {
+        std::vector<int> sortedArr(arr.size());
+        std::vector<int> count(10);
+        for (int i = 0; i < arr.size(); ++i) {
+            count[(arr[i] / exp) % 10]++;
         }
-        if(count[0] == size){break;}
-        for (int i = 0; i < size; ++i)
-        {
-            result[positon[(vec[i]/place)%10]++] = vec[i];
+        for (int i = 1; i < 10; ++i) {
+            count[i] += count[i - 1];
         }
-        for (int i = 0; i < 10; ++i)
-        {
-            count[i] = 0,positon[i] = 0;
+        for (int i = arr.size() - 1; i >= 0; --i) {
+            sortedArr[--count[(arr[i] / exp) % 10]] = arr[i];
         }
-        place*=10;
-        poz = 0;
-        std::swap(vec,result);
+        arr = sortedArr;
     }
 }
